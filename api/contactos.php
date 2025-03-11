@@ -13,11 +13,20 @@ if (!isset($_SESSION['user_id'])) {
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === "GET") {
-    // Obtener todos los contactos
-    $query = "SELECT * FROM contactos";
-    $result = mysqli_query($conn, $query);
-    $contactos = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    echo json_encode($contactos);
+    // Obtener un solo contacto si se pasa el id
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        $query = "SELECT * FROM contactos WHERE id = $id";
+        $result = mysqli_query($conn, $query);
+        $contacto = mysqli_fetch_assoc($result);
+        echo json_encode($contacto);
+    } else {
+        // Obtener todos los contactos si no se pasa el id
+        $query = "SELECT * FROM contactos";
+        $result = mysqli_query($conn, $query);
+        $contactos = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        echo json_encode($contactos);
+    }
 } elseif ($method === "POST") {
     // Crear un nuevo contacto
     $data = json_decode(file_get_contents("php://input"), true);
